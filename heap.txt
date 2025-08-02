@@ -1,0 +1,88 @@
+//Heap Sort
+
+#include <stdio.h>
+#define SIZE 10
+int ARRAY[SIZE];
+int SIZE_NOW = 0; // Tracks the number of elements inserted
+// Function to insert data directly into Max Heap
+void insertIntoMaxHeap(int value) {
+ if (SIZE_NOW >= SIZE) {
+ printf("Heap is full. Cannot insert %d\n", value);
+ return;
+ }
+ int i = SIZE_NOW;
+ ARRAY[i] = value;
+ SIZE_NOW++;
+ // Bubble up to maintain Max Heap property
+ while (i > 0) {
+ int parent = (i - 1) / 2;
+ if (ARRAY[parent] < ARRAY[i]) {
+ int temp = ARRAY[i];
+ ARRAY[i] = ARRAY[parent];
+ ARRAY[parent] = temp;
+ i = parent;
+ } else {
+ break;
+ }
+ }
+}
+// Function to take input and build Max Heap immediately
+void dataentry() {
+ int value;
+ printf("\nEnter %d elements:\n", SIZE);
+ for (int i = 0; i < SIZE; i++) {
+ printf("Enter data for index %d:\t", i);
+ scanf("%d", &value);
+ insertIntoMaxHeap(value); // Insert while maintaining Max Heap
+ }
+}
+// Function to display array elements
+void display() {
+ printf("\nArray contents:\n");
+ for (int i = 0; i < SIZE_NOW; i++) {
+ printf("%d ", ARRAY[i]);
+ }
+ printf("\n");
+}
+// Heap Sort using Max Heap
+void HeapSort() {
+ int temp;
+ int heapSize = SIZE_NOW;
+ for (int i = heapSize - 1; i > 0; i--) {
+ // Swap max (root) with last element
+ temp = ARRAY[0];
+ ARRAY[0] = ARRAY[i];
+ ARRAY[i] = temp;
+ int k = 0;
+ // Heapify the reduced heap (size: i)
+ while (1) {
+ int lchild = 2 * k + 1;
+ int rchild = 2 * k + 2;
+ int max = k;
+ if (lchild < i && ARRAY[lchild] > ARRAY[max]) {
+ max = lchild;
+ }
+ if (rchild < i && ARRAY[rchild] > ARRAY[max]) {
+ max = rchild;
+ }
+ if (max != k) {
+ temp = ARRAY[k];
+ ARRAY[k] = ARRAY[max];
+ ARRAY[max] = temp;
+ k = max;
+ } else {
+ break;
+ }
+ }
+ }
+}
+// Main function
+int main() {
+ dataentry(); // Insert data directly into Max Heap
+ printf("\nMax Heap built from input data:\n");
+ display();
+ HeapSort(); // Perform heap sort
+ printf("\nData sorted in ascending order using Heap Sort:\n");
+ display();
+ return 0;
+}

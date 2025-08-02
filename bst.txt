@@ -1,0 +1,122 @@
+#include <stdio.h>
+#include <stdlib.h> // for malloc
+/* ---------- 1. Define the node structure ---------- */
+struct Node
+{
+ int data; // number stored here
+ struct Node *left; // pointer to left child
+ struct Node *right; // pointer to right child
+};
+/* ---------- 2. Make root global ---------- */
+struct Node *root = NULL; // tree starts empty
+/* ---------- 3. Insert a value into the BST ---------- */
+void insert(int value)
+{
+ /* Allocate memory for the new node right here */
+ struct Node *newNode = (struct Node *)malloc(sizeof(struct Node));
+ newNode->data = value;
+ newNode->left = NULL;
+ newNode->right = NULL;
+ /* If tree is empty, new node becomes the root */
+ if (root == NULL)
+ {
+ root = newNode;
+ return;
+ }
+ /* Otherwise, find the correct place to insert */
+ struct Node *current = root;
+ struct Node *parent = NULL;
+ while (current != NULL)
+ {
+ parent = current;
+ if (value < current->data)
+ current = current->left; // go left
+ else if (value > current->data)
+ current = current->right; // go right
+ else
+ {
+ /* Duplicate value – do not insert */
+ printf("Value %d already exists – not inserted.\n", value);
+ free(newNode); // release unused memory
+ return;
+ }
+ }
+ /* Link the new node to the parent */
+ if (value < parent->data)
+ parent->left = newNode;
+ else
+ parent->right = newNode;
+}
+/* ---------- 4. Traversal functions (recursive) ---------- */
+void inorder(struct Node *node) // Left, Root, Right
+{
+ if (node != NULL)
+ {
+ inorder(node->left);
+ printf("%d ", node->data);
+ inorder(node->right);
+ }
+}
+void preorder(struct Node *node) // Root, Left, Right
+{
+ if (node != NULL)
+ {
+ printf("%d ", node->data);
+ preorder(node->left);
+ preorder(node->right);
+ }
+}
+void postorder(struct Node *node) // Left, Right, Root
+{
+ if (node != NULL)
+ {
+ postorder(node->left);
+ postorder(node->right);
+ printf("%d ", node->data);
+ }
+}
+/* ---------- 5. Main program – quick test menu ---------- */
+int main(void)
+{
+ int choice, num;
+ printf("Binary Search Tree – super simple version\n");
+ while (1)
+ {
+ printf("\nMenu\n");
+ printf("1. Insert number\n");
+ printf("2. In‑order traversal (sorted)\n");
+ printf("3. Pre‑order traversal\n");
+ printf("4. Post‑order traversal\n");
+ printf("5. Exit\n");
+ printf("Enter choice: ");
+ if (scanf("%d", &choice) != 1) break;
+ switch (choice)
+ {
+ case 1:
+ printf("Enter number: ");
+ if (scanf("%d", &num) == 1) insert(num);
+ break;
+ case 2:
+ printf("In‑order : ");
+ inorder(root);
+ printf("\n");
+ break;
+ case 3:
+ printf("Pre‑order: ");
+ preorder(root);
+ printf("\n");
+ break;
+ case 4:
+ printf("Post‑order: ");
+ postorder(root);
+ printf("\n");
+ break;
+ case 5:
+ printf("Goodbye!\n");
+ return 0;
+ default:
+ printf("Invalid option. Try again.\n");
+ }
+ }
+ return 0;
+}

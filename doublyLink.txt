@@ -1,0 +1,111 @@
+#include <stdio.h>
+#include <stdlib.h>
+// Define a structure for a node in the doubly linked list
+struct Node {
+ int data;
+ struct Node* prev;
+ struct Node* next;
+};
+struct Node* head = NULL; // Start of the list
+// Function to create and append a node at the end
+void insert(int val) {
+ struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+ newNode->data = val;
+ newNode->prev = NULL;
+ newNode->next = NULL;
+ if (head == NULL) {
+ head = newNode; // First node in the list
+ } else {
+ struct Node* temp = head;
+ while (temp->next != NULL) {
+ temp = temp->next; // Traverse to the last node
+ }
+ temp->next = newNode; // Link the new node at the end
+ newNode->prev = temp; // Set previous pointer
+ }
+ printf("%d inserted into the list.\n", val);
+}
+// Function to delete a node with a given value
+void deleteElement(int val) {
+ if (head == NULL) {
+ printf("List is empty. Cannot delete.\n");
+return;
+ }
+ struct Node* temp = head;
+ // Search for the node to delete
+ while (temp != NULL && temp->data != val) {
+ temp = temp->next;
+ }
+ if (temp == NULL) {
+ printf("Element %d not found in the list.\n", val);
+ return;
+ }
+ // If it's the only node
+ if (temp->prev == NULL && temp->next == NULL) {
+ head = NULL;
+ }
+ // If it's the head node
+ else if (temp->prev == NULL) {
+ head = temp->next;
+ head->prev = NULL;
+ }
+ // If it's the last node
+ else if (temp->next == NULL) {
+ temp->prev->next = NULL;
+ }
+ // If it's a middle node
+ else {
+ temp->prev->next = temp->next;
+ temp->next->prev = temp->prev;
+ }
+ printf("Element %d deleted from the list.\n", val);
+ free(temp); // Free the deleted node
+}
+// Function to display the list
+void display() {
+ if (head == NULL) {
+ printf("List is empty.\n");
+ return;
+ }
+ struct Node* temp = head;
+ printf("List contents: ");
+ while (temp != NULL) {
+printf("%d ", temp->data);
+ temp = temp->next;
+ }
+ printf("\n");
+}
+// Main function with menu
+int main() {
+ int choice, val;
+ while (1) {
+ printf("\n--- Doubly Linked List Menu ---\n");
+ printf("1. Insert element\n");
+ printf("2. Delete element\n");
+ printf("3. Display list\n");
+ printf("4. Exit\n");
+ printf("Enter your choice: ");
+ scanf("%d", &choice);
+ switch (choice) {
+ case 1:
+ printf("Enter value to insert: ");
+ scanf("%d", &val);
+ insert(val);
+ break;
+ case 2:
+ printf("Enter value to delete: ");
+ scanf("%d", &val);
+ deleteElement(val);
+ break;
+ case 3:
+ display();
+ break;
+ case 4:
+ printf("Exiting...\n");
+ exit(0);
+ default:
+ printf("Invalid choice. Please try again.\n");
+ }
+ }
+ return 0;
+}
